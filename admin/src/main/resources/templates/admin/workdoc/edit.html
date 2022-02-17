@@ -1,0 +1,151 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>编辑工单</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">工单号</label>
+		<div class="layui-input-block">
+			<input style="background: #F0F0F0" readonly th:value="${info.docNo}" type="text" name="docNo" id="docNo" lay-verify="required" lay-verType="tips" lay-reqText="工单号不能为空" placeholder="请输入产品编码" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产品编码</label>
+		<div class="layui-input-block">
+			<select id="skuNo" name="skuNo" class="layui-select" lay-verify="required" lay-filter="skuNo" lay-search lay-verType="tips" lay-reqText="请输入产品编码" >
+				<option value="">请输入产品编码</option>
+			</select>
+			<input type="hidden" th:value="${info.skuNo}"  lay-reqText="产品编码不能为空"  id="sku_no" class="layui-input">
+			<input type="hidden" th:value="${info.skuDesc}" lay-reqText="产品名称不能为空" id="skuDesc" name="skuDesc" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">托盘规格</label>
+		<div class="layui-input-block">
+			<input th:value="${info.pallet2carton}" style="background: #F0F0F0" id="pallet2carton" type="text" name="pallet2carton"  lay-verify="required|number" lay-verType="tips" lay-reqText="请输入托盘规格" placeholder="请输入托盘规格" class="layui-input" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">生产日期</label>
+		<div class="layui-input-block">
+			<input th:value="${#dates.format(info.mfgDate,'yyyy-MM-dd')}" type="text" name="mfgDate" id="mfgDate" lay-verify="required|date" lay-verType="tips" lay-reqText="请输入生产日期" placeholder="请输入生产日期" class="layui-input" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产品批号</label>
+		<div class="layui-input-block">
+			<input th:value="${info.lotNo}" type="text" name="lotNo" id="lotNo" lay-verify="required|verifInput" lay-verType="tips" lay-reqText="请输入产品批号" placeholder="请输入产品批号" class="layui-input" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产线代码</label>
+		<div class="layui-input-block">
+			<input th:value="${info.plineNo}" type="hidden" id="pline_no" />
+			<select id="plineNo" name="plineNo" class="layui-select" lay-verify="required" lay-verType="tips" lay-reqText="请输入产线代码" lay-filter="plineNo" lay-search>
+				<option value="">请选择产线代码</option>
+				<th:block th:each="vo:${lineList}">
+					<option th:value="${vo.plineNo}" th:text="${vo.plineNo}" th:selected="${info.plineNo==vo.plineNo?true:false}"></option>
+				</th:block>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">计划数量</label>
+		<div class="layui-input-block">
+			<input th:value="${info.reqQty}" type="text" name="reqQty" id="reqQty" lay-verify="required|number" lay-verType="tips" lay-reqText="请输入计划数量" placeholder="请输入计划数量" class="layui-input" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">灌装单号</label>
+		<div class="layui-input-block">
+			<input th:value="${info.extend2}" type="text"  name="extend2" id="extend2" lay-verify="required|verifInput" lay-verType="tips" lay-reqText="请输入灌装单号" placeholder="请输入请输入灌装单号" class="layui-input" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<input type="hidden" name="id" th:value="${info.id}" lay-verify="required" lay-verType="tips" lay-reqText="ID不能为空" class="layui-input">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+	layui.use(['jquery', 'form', 'layer', 'laydate'], function()
+	{
+		var $ = layui.jquery, layer = layui.layer, laydate = layui.laydate, form = layui.form;
+
+		laydate.render({
+			elem: '#mfgDate'
+		});
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+		})
+
+		ajaxform('submit', '/admin/workdoc/update', 'form',
+		function(json)
+		{
+			if(json.code==200)
+			{
+				layer.msg(json.msg, {time: 1000}, function()
+				{
+					parent.layer.closeAll();
+					parent.location.reload();
+				});
+			}else{
+				layer.msg(json.msg);
+			}
+		})
+
+		$.get('/admin/material/search', function (json)
+		{
+			if(json.code==200)
+			{
+				let html = '';
+				let sku_no = $("#sku_no").val()
+				$.each(json.data, function (index, row)
+				{
+					var selected = sku_no == row.sku_no ? 'selected' : '';
+					html += '<option '+selected+' value="'+row.sku_no+'" data-desc="'+row.sku_desc+'" data-carton="'+row.pallet2carton+'">'+row.sku_no+'('+row.sku_desc+')</option>';
+				});
+				$("#skuNo").append(html);
+				form.render();
+			}
+		},'json');
+
+		form.on('select(skuNo)', function(data)
+		{
+			$("#skuDesc").val($(data.elem).find("option:selected").data("desc"));
+			$("#pallet2carton").val($(data.elem).find("option:selected").data("carton"));
+		});
+	})
+</script>
+</body>
+</html>

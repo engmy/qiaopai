@@ -1,0 +1,23 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+  cache:
+    type: caffeine
+    caffeine:
+      spec: initialCapacity=200,maximumSize=200,expireAfterWrite=3600s
+  data:
+    mongodb:
+      database: product
+      uri: mongodb://qixuan:qixuan123abc@127.0.0.1:24001,127.0.0.1:24002,127.0.0.1:24003/product?replicaSet=dalian
+custom:
+  api:
+    task:
+      url: http://127.0.0.1:6002
+  logback:
+    file: D://壳牌项目/logs/
+  upload:
+    export-excel-file-path: "D://壳牌项目/excel"
+    pallet-code-file-path: "D://壳牌项目/code"
+    report-code-file-path: "D://壳牌项目/report"
+    user-avatar-file-path: "D://壳牌项目/avatar"

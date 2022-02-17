@@ -1,0 +1,88 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>重置密码</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="password-form" class="layui-form" method="post" lay-size="sm">
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">新&ensp;密&ensp;码</label>
+		<div class="layui-input-block">
+			<input type="password" name="newpass" id="newpass" lay-verify="newpass" lay-verType="tips" placeholder="请输入新密码" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">重输密码</label>
+		<div class="layui-input-block">
+			<input type="password" name="renewpass" lay-verify="renewpass" lay-verType="tips" placeholder="请输入重输新密码" error="两次输入的密码不一样" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<input  th:value="${params.id}" type="hidden" name="userId" id="userId" lay-verify="userId" placeholder="请输入用户ID" class="layui-input">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit"  lay-filter="password-submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+	
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+layui.use(['jquery', 'form', 'layer'], function() 
+{
+	var $ = layui.jquery,form = layui.form ,layer = layui.layer;
+
+	form.verify({
+		newpass:function(value,dom)
+		{
+			if(!value)
+			{
+				return $(dom).attr('placeholder');
+			}
+
+			if(value.length < 6)
+			{
+				return "密码长度不能少于6位";
+			}
+		},
+		renewpass:function(value,dom)
+		{
+			if(!value)
+			{
+				return $(dom).attr('placeholder');
+			}
+			if(value!=$("#newpass").val())
+			{
+				return $(dom).attr('error');
+			}
+		}
+	})
+
+	//提交表单
+	ajaxform('password-submit', '/admin/user/editpass', 'password-form',
+	function(json)
+	{
+		if(json.code==200)
+		{
+			layer.msg(json.msg,	{time: 1000}, function()
+			{
+				parent.layer.closeAll();
+			})
+		}else{
+			layer.msg(json.msg);
+		}
+	})
+})
+</script>
+</body>
+</html>

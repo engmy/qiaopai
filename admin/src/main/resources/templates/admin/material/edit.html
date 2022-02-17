@@ -1,0 +1,111 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>编辑物料</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产品编码</label>
+		<div class="layui-input-block">
+			<input readonly style="background:#F0F0F0" type="text" name="skuNo" th:value="${info.skuNo}" id="skuNo" lay-verify="required|verifyInput|verifyInputSku" lay-verType="tips" lay-reqText="请输入产品编码" placeholder="请输入产品编码" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产品名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="skuDesc" th:value="${info.skuDesc}" id="skuDesc" lay-verify="required|verifyInput" lay-verType="tips" lay-reqText="请输入产品名称" placeholder="请输入产品名称" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">产品规格</label>
+		<div class="layui-input-block">
+			<select name="skuSpec" id="skuSpec" lay-verify="required" lay-verType="tips" lay-reqText="请输入外箱单位" class="layui-select">
+				<option value="">请选择规格</option>
+				<option value="18L"   th:selected="${info.skuSpec=='18L'?true:false}">18L</option>
+				<option value="20L"   th:selected="${info.skuSpec=='20L'?true:false}">200L</option>
+				<option value="209L"  th:selected="${info.skuSpec=='209L'?true:false}">209L</option>
+				<option value="1000L" th:selected="${info.skuSpec=='1000L'?true:false}">1000L</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">外箱单位</label>
+		<div class="layui-input-block">
+			<input readonly style="background:#F0F0F0" th:value="${info.cartonUnit}" type="text" name="cartonUnit" id="cartonUnit" lay-verify="required" placeholder="请输入外箱单位" lay-verType="tips" lay-reqText="请输入外箱单位" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">整盘外箱数</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.pallet2carton}" name="pallet2carton" id="pallet2carton" lay-verify="required|number|verifyInputNumber" lay-verType="tips" lay-reqText="请输入整盘外箱数" placeholder="请输入整盘外箱数" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<input type="hidden" name="id" th:value="${info.id}" lay-verify="required" lay-verType="tips" lay-reqText="ID不能为空" class="layui-input">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+	
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+layui.use(['jquery', 'form', 'layer'], function() 
+{
+	var $ = layui.jquery,form = layui.form ,layer = layui.layer;
+
+	// 输入框验证
+	form.verify({
+		verifyInput:function(value,dom)
+		{
+			return verifInputValue(value);
+		},
+		verifyInputSku:function (value,dom)
+		{
+			let res = prohibitChinese(value);
+			if(res !== undefined){
+				return res;
+			}
+			return verifLength(value,9);
+		},
+		verifyInputNumber:function (value,dom)
+		{
+			return verifLength(value,4);
+		},
+	})
+
+	ajaxform('submit', '/admin/material/update', 'form',
+	function(json)
+	{
+		if(json.code==200)
+		{
+			layer.msg(json.msg, {time: 1000}, function()
+			{
+				parent.layer.closeAll();
+				parent.location.reload();
+			});
+		}else{
+			layer.msg(json.msg);
+		}
+	})
+})
+</script>
+</body>
+</html>

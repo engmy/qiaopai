@@ -1,0 +1,24 @@
+09:29:52.976 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:29:52.983 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 6816 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:29:52.985 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:29:56.014 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+09:33:02.097 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:33:02.099 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 14964 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:33:02.102 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:33:03.122 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+09:33:57.754 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:33:57.762 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 5680 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:33:57.764 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:33:58.781 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+09:35:31.406 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:35:31.408 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 21884 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:35:31.409 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:35:32.476 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+09:39:16.138 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:39:16.146 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 19628 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:39:16.147 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:39:17.555 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+09:42:47.175 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:42:47.178 [main] INFO  c.q.a.AdminApplication - [logStarting,55] - Starting AdminApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 12564 (D:\svn_code\壳牌\admin\target\classes started by EDY in D:\svn_code\壳牌)
+09:42:47.179 [main] INFO  c.q.a.AdminApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:42:48.210 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext

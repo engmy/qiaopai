@@ -1,0 +1,136 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>操作记录</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>操作记录</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-panel-search">
+			<div class="layui-input-inline">
+				<label class="layui-form-label">系统模块：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('title'))}" name="title" placeholder="请输入系统模块" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">操作人：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('create_user'))}" name="create_user" placeholder="请输入操作人" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">操作状态：</label>
+				<div class="layui-input-block">
+					<select name="status" id="status" placeholder="请选择操作状态" class="layui-select">
+						<option value="">请选择操作状态</option>
+						<option value="1" th:selected="${params.get('status')=='1'?true:false}">成功</option>
+						<option value="2" th:selected="${params.get('status')=='2'?true:false}">失败</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">操作类型：</label>
+				<div class="layui-input-block">
+					<select name="business_type" id="business_type" placeholder="请选择操作状态" class="layui-select">
+						<option value="">请选择操作状态</option>
+						<option value="0" th:selected="${params.get('business_type')=='0'?true:false}">其它</option>
+						<option value="1" th:selected="${params.get('business_type')=='1'?true:false}">新增</option>
+						<option value="2" th:selected="${params.get('business_type')=='2'?true:false}">修改</option>
+						<option value="3" th:selected="${params.get('business_type')=='3'?true:false}">删除</option>
+						<option value="4" th:selected="${params.get('business_type')=='4'?true:false}">授权</option>
+						<option value="5" th:selected="${params.get('business_type')=='5'?true:false}">导出</option>
+						<option value="6" th:selected="${params.get('business_type')=='6'?true:false}">导入</option>
+						<option value="7" th:selected="${params.get('business_type')=='7'?true:false}">强退</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">操作日期：</label>
+				<div class="layui-input-inline">
+					<input th:value="${#strings.trim(params.get('startDate'))}"  id="startTime" name="startDate" placeholder="请选择开始日期" autocomplete="off" class="layui-input" type="text">
+				</div>
+				<div class="layui-input-inline">
+					<input th:value="${#strings.trim(params.get('endDate'))}"  id="endTime"   name="endDate" placeholder="请选择结束日期" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+				<i class="layui-icon layui-icon-search"></i>搜 索
+			</button>
+		</div>
+	</form>
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+				<i class="layui-icon layui-icon-refresh"></i> 刷新
+			</button>
+		</div>
+	</script>
+	<div class="layui-form">
+		<table id="table" lay-filter="operlog"></table>
+	</div>
+	<script th:inline="javascript" type="text/html" id="bartool">
+		<a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="detail">
+			<i class="layui-icon layui-icon-list"></i> 日志详情
+		</a>
+	</script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'laydate'], function()
+	{
+		var table = layui.table, $ = layui.jquery, form = layui.form, search = window.location.search;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+		})
+
+		layDateRang("#startTime", "#endTime");
+
+		let cols = [{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'title', title: '系统模块',  width: '10%'},
+			{field: 'type', title: '操作类型', width:'10%', templet:
+			function (row)
+			{
+				let businessType = {0:"其它",1:"新增",2:"修改",3:"删除",4:"授权",5:"导出",6:"导入",7:"强退",8:"生成代码",9:"清空数据"};
+				return businessType[row.business_type];
+			}},
+			{field: 'ip', title: '主机',  width: '8%'},
+			{field: 'method', title: '请求方式',  width: '10%'},
+			{field: 'uri', title: '请求地址',  width: '15%'},
+			{field: 'status', title: '操作状态', width:'8%', templet:
+			function (row)
+			{
+				let businessStatus = {1:"成功",2:"失败"};
+				return businessStatus[row.status];
+			}},
+			{field: 'create_user', title: '操作人',  width: '10%'},
+			{field: 'create_time', title: '操作时间',  width: '12%'},
+			{align: 'center', title: '操作', toolbar: '#bartool' }];
+
+		let url = '/admin/operlog/data' + $.trim(search);
+		table.render(renderParam(url, cols));
+
+		table.on('tool(operlog)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'detail')
+			{
+				showBox('日志详情', 700, 700, 1, '/admin/operlog/detail?id='+data.oper_id);
+			}
+		});
+	})
+</script>
+</body>
+</html>

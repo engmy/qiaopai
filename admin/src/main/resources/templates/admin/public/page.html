@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="layui-box" th:fragment="show(url)">
+	<ul class="layui-laypage">
+	<li><a th:href="@{${url}(page=1)}"  th:class="${page.isFirstPage?'active':''}">首页</a></li>
+	<li>
+		<th:block th:if="${not page.isFirstPage}">
+			<a th:href="@{${url}(page=${page.prePage})}">上一页</a>
+		</th:block>
+		<th:block th:if="${page.isFirstPage}">
+			<a href="javascript:void(0)">上一页</a>
+		</th:block>
+	</li>
+	<li>
+		<th:block th:each="num:${page.navigatepageNums}">
+			<a th:href="@{${url}(page=${num})}" th:class="${num==page.pageNum}?'active':''" th:text="${num}"></a>
+		</th:block>
+	</li>
+	<li>
+		<th:block th:if="${not page.isLastPage}">
+			<a th:href="@{${url}(page=${page.nextPage})}">下一页</a>	
+		</th:block>
+		<th:block th:if="${page.isLastPage}">
+			<a href="javascript:void(0)">下一页</a>
+		</th:block>
+	</li>
+	<li>
+		<a th:href="@{${url}(page=${page.pages})}" th:class="${page.isLastPage?'active':''}">尾页</a>
+	</li>
+	<li>
+		<a href="javascript:void(0)" th:text="'共'+${page.pages}+'页'"></a>
+	</li>
+	</ul>
+</div>

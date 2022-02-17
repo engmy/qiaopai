@@ -1,0 +1,126 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>生产数据</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>外箱数据</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-panel-search">
+			<div class="layui-input-inline">
+				<label class="layui-form-label">外箱码：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('carton_code'))}" name="carton_code" placeholder="请输入外箱码" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">托盘号：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('pallet_code'))}" name="pallet_code" placeholder="请输入托盘号" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">工单号：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('doc_no'))}" name="doc_no" placeholder="请输入工单号" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">产品编码：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('sku_no'))}" name="sku_no" placeholder="请输入产品编码" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">产品批号：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('lot_no'))}" name="lot_no" placeholder="请输入产品批号" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<div class="layui-input-inline">
+				<label class="layui-form-label">灌装单号：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('filling_no'))}" name="filling_no" placeholder="请输入灌装单号" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+				<i class="layui-icon layui-icon-search"></i>搜 索
+			</button>
+		</div>
+	</form>
+
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+				<i class="layui-icon layui-icon-refresh"></i> 刷新
+			</button>
+		</div>
+	</script>
+
+	<div class="layui-form">
+		<table id="table" lay-filter="relations" lay-data="{id: 'idTest'}"></table>
+	</div>
+	<script th:inline="javascript" type="text/html" id="bartool">
+		<a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
+			<i class="layui-icon layui-icon-edit"></i>编辑
+		</a>
+		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">
+			<i class="layui-icon layui-icon-delete"></i>删除
+		</a>
+	</script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table'], function()
+	{
+		var $ = layui.jquery;
+		var table = layui.table,form = layui.form;
+		var search = window.location.search;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				let res = verifInputValue(value);
+				if(res !== undefined){
+					return res;
+				}
+				return prohibitChinese(value);
+			},
+		})
+
+		let cols = [
+			{type:  'checkbox', title: '全选', field: 'doc_no'},
+			{field: 'carton_code', title: '外箱码', width: '12%'},
+			{field: 'pallet_code', title: '托盘号', width: '12%'},
+			{field: 'doc_no', title: '工单号', width: '25%'},
+			{field: 'filling_no', title: '灌装单号', width: '10%'},
+			{field: 'sku_no', title: '产品编码', width: '8%'},
+			{field: 'lot_no', title: '产品批号', width: '8%'},
+			{field: 'sku_desc', title: '产品名称', width: '18%'},
+			{field: 'upload_flag', title: '上传状态', width:'6%', templet:
+			function (row)
+			{
+				var texts = {0: "待上传", 100: "上传中", 200: "已上传", 500: "上传异常"};
+				return texts[row.upload_flag] ? texts[row.upload_flag] : "";
+			}},
+			{field: 'upload_time', title: '上传时间', width: '11%'},
+			{field: 'mfg_date', title: '生产日期', width: '8%'},
+			{field: 'pline_no', title: '产线代码', width: '8%'},
+			{field: 'team_no', title: '班组代码', width: '8%'},
+			{field: 'sequence_id', title: '批次流水号', width: '10%'},
+			{field: 'create_time', title: '创建时间', width: '11%'},
+		];
+		let url = '/admin/relation/data' + $.trim(search);
+
+		table.render(renderParam(url,cols));
+
+	})
+</script>
+</body>
+</html>

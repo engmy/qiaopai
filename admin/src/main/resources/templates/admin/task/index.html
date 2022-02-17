@@ -1,0 +1,129 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>任务管理</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>任务管理</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-panel-search">
+			<div class="layui-input-inline">
+				<label class="layui-form-label">任务名称：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('task_name'))}" name="task_name" placeholder="请输入任务名称" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+				<i class="layui-icon layui-icon-search"></i>搜 索
+			</button>
+		</div>
+	</form>
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+				<i class="layui-icon layui-icon-refresh"></i> 刷新
+			</button>
+			<button th:if="${#lists.contains(permissions, 'admin:task:add')}" href="javascript:void(0)" class="layui-btn-normal layui-btn layui-btn-sm" onclick="showBox('新增任务', 650, 590, 1, '/admin/task/add')">
+				<i class="layui-icon layui-icon-addition"></i>新增任务
+			</button>
+		</div>
+	</script>
+	<div class="layui-form">
+		<table id="table" lay-filter="task"></table>
+	</div>
+	<script th:inline="javascript" type="text/html" id="bartool">
+		<a th:if="${#lists.contains(permissions, 'admin:task:edit')}" class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
+			<i class="layui-icon layui-icon-edit"></i>编辑
+		</a>
+		<a th:if="${#lists.contains(permissions, 'admin:task:delete')}" class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">
+			<i class="layui-icon layui-icon-delete"></i>删除
+		</a>
+	</script>
+	<script type="text/html" id="status-tmpl">
+		{{#  if(d.status==1){ }}
+		<input type="checkbox" name="status" lay-skin="switch" checked lay-text="开启|关闭"  value={{d.task_id}}  lay-filter="status" >
+		{{#  } else { }}
+		<input type="checkbox" name="status" lay-skin="switch"  lay-text="开启|关闭"  value={{d.task_id}} lay-filter="status" >
+		{{#  } }}
+	</script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload'], function()
+	{
+		var table = layui.table, $ = layui.jquery, form = layui.form, search = window.location.search;
+		var toolbar = $.trim($("#bartool").html())=="" ? true : false;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+		})
+
+		let cols = [
+			{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'task_name', title: '任务名称',  width: '15%'},
+			{field: 'cron', title: 'Cron表达式',  width: '15%'},
+			{field: 'task_key', title: '调用方法',  width: '15%'},
+			{field: 'status', title: '状态', width:'10%', templet: '#status-tmpl'},
+			{field: 'update_user', title: '更新人',  width:'12%'},
+			{field: 'update_time', title: '更新时间'},
+			{align: 'center', title: '操作', toolbar: '#bartool', hide: toolbar},
+		];
+		let url = '/admin/task/data' + $.trim(search);
+
+		table.render(renderParam(url,cols));
+
+		table.on('tool(task)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'del')
+			{
+				layer.confirm('确定要删除吗？', function(index)
+				{
+					$.post("/admin/task/delete", {id: data.task_id},
+					function(json)
+					{
+						if(json.code==200)
+						{
+							parent.layer.closeAll();
+							parent.location.reload();
+						}else{
+							layer.msg(json.msg);
+						}
+					},"json");
+				});
+			} else if(layEvent === 'edit')
+			{
+				showBox('编辑任务', 650, 600, 1, '/admin/task/edit?id='+data.task_id);
+			}
+		});
+
+		form.on('switch(status)', function(data)
+		{
+			var id = data.elem.value;
+			var status = this.checked ? 1 : 2;
+
+			$.post("/admin/task/change", {"id":id,"status":status}, function(json)
+			{
+				if(json.code==200)
+				{
+					layer.msg(json.msg);
+				}else{
+					layer.msg(json.msg);
+				}
+			}, 'json');
+		});
+	})
+</script>
+</body>
+</html>

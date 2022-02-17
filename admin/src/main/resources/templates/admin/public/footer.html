@@ -1,0 +1,30 @@
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+<div layout:fragment="footer"></div>
+<th:block th:if="${session.passwordStrength}">
+<script type="text/javascript">
+    layer.msg("系统检测到您的密码为初始密码，请及时修改！", {time: 3200}, function()
+    {
+        showBox('修改密码', 400, 300, 0, '/admin/editPass');
+        return false;
+    });
+</script>
+</th:block>
+<th:block th:if="${session.passwordLength}">
+<script type="text/javascript">
+    layer.msg("系统检测到您的密码为弱密码，请及时修改！", {time: 3200}, function()
+    {
+        showBox('修改密码', 400, 300, 0, '/admin/editPass');
+        return false;
+    });
+</script>
+</th:block>
+<th:block th:if="${session.modifyExpiration}">
+<script type="text/javascript">
+    layer.msg("系统检测到您的密码三个月未修改，请及时修改！", {time: 3200}, function()
+    {
+        showBox('修改密码', 400, 300, 0, '/admin/editPass');
+        return false;
+    });
+</script>
+</th:block>

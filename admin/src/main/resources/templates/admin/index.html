@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>首页</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">控制台</a><a><cite>首页</cite></a>
+	</div>
+	<hr />
+	<div class="layui-form">
+		<table id="table" lay-filter="workdoc"></table>
+	</div>
+</div>
+
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload'], function()
+	{
+		var table = layui.table;
+		var $ = layui.jquery;
+		var search = window.location.search;
+
+		let url = '/admin/stats/data' + $.trim(search);
+		let cols = [
+			{field: 'site_desc', title: '工厂',  width: '10%'},
+			{field: 'doc_no', title: '工单号'},
+			{field: 'sku_no', title: '产品编码',  width: '10%'},
+			{field: 'lot_no', title: '产品批号', width: '10%'},
+			{field: 'pline_no', title: '产线代码', width:'10%'},
+			{field: 'mfg_date', title: '生产日期', width:'10%'},
+			{field: 'req_qty',  title: '计划数量', width:'10%'},
+			{field: 'qty1', title: '实际生产数量',  width:'8%'},
+			{field: 'qty2', title: '已上传中台数量', width:'8%'},
+		];
+
+		table.render(renderParam(url, cols, false));
+	})
+</script>
+</body>
+</html>

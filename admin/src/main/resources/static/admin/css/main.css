@@ -1,0 +1,135 @@
+/*自定义全局设置*/
+.fr{float: right;}
+.fl{float: left;}
+
+.pt-0{padding-top:0   !important;}
+.pr-0{padding-right:0 !important;}
+.pb-0{padding-top:0   !important;}
+.pl-0{padding-left:0  !important;}
+
+.p-10{padding: 10px 		!important;}
+.pt-10{padding-top: 10px 	!important;}
+.pb-10{padding-bottom: 10px !important;}
+.pl-10{padding-left: 10px   !important;}
+.pr-10{padding-right: 10px  !important;}
+
+.p-15{padding: 15px 		!important;}
+.pt-15{padding-top: 15px 	!important;}
+.pb-15{padding-bottom: 15px !important;}
+.pl-15{padding-left: 15px   !important;}
+.pr-15{padding-right: 15px  !important;}
+
+.mt-0{margin-top:0   !important;}
+.mr-0{margin-right:0 !important;}
+.mb-0{margin-top:0   !important;}
+.ml-0{margin-left:0  !important;}
+
+.m-5{margin: 5px !important;}
+.mt-5{margin-top: 5px !important;}
+.mb-5{margin-bottom: 5px !important;}
+.ml-5{margin-left: 5px !important;}
+.mr-5{margin-right: 5px !important;}
+
+.m-10{margin: 10px !important;}
+.mt-10{margin-top: 10px !important;}
+.mb-10{margin-bottom: 10px !important;}
+.ml-10{margin-left: 10px   !important;}
+.mr-10{margin-right: 10px  !important;}
+
+.m-15{margin: 15px !important;}
+.mt-15{margin-top: 15px !important;}
+.mb-15{margin-bottom: 15px !important;}
+.ml-15{margin-left: 15px   !important;}
+.mr-15{margin-right: 15px  !important;}
+
+.m-20{margin: 20px !important;}
+.mt-20{margin-top: 20px !important;}
+.mb-20{margin-bottom: 20px !important;}
+.ml-20{margin-left:  20px  !important;}
+.mr-20{margin-right: 20px  !important;}
+
+.m-30{margin: 30px !important;}
+.mt-30{margin-top: 30px !important;}
+.mb-30{margin-bottom: 30px!important;}
+.ml-30{margin-left: 30px  !important;}
+.mr-30{margin-right: 30px !important;}
+
+.f-15{font-size:15px !important;}
+.f-18{font-size:18px !important;}
+.f-20{font-size:20px !important;}
+.f-25{font-size:25px !important;}
+.f-30{font-size:30px !important;}
+.f-35{font-size:35px !important;}
+.f-40{font-size:50px !important;}
+
+/*自定义表格样式*/
+.layui-form-label.layui-required:after{content:"*";color:red;position:absolute;top:10px;left:5px}
+body{font:14px Microsoft Yahei,sans-serif}
+.layui-disabled, .layui-disabled:hover{background: #F0F0F0;color: rgba(0,0,0,.85) !important;}
+.layui-fluid{padding:15px}
+.logo{position:absolute;left:20px;top:10px;font-size:18px!important;color:#fff!important}
+.layui-text-weight{font-weight:bolder}
+.layui-breadcrumb{font-size:14px;background:#fff}
+.layui-btn-sm{line-height:28px!important}
+.layui-layout-admin .layui-header{background-color:#1e9fff!important}
+.layui-layout-admin .layui-header{position:fixed;top:0;left:0;width:100%;z-index:1002}
+.layui-layout-admin .layui-logo{background-color:#0085e8!important;font-size:18px}
+.layui-side-menu .layui-side-scroll{width:240px}
+.layui-layout-admin .layui-logo a{color:#fff!important}
+.layui-layout-admin .layui-side{width:220px}
+.layui-layout-admin .layui-logo{width:220px;box-sizing:border-box;overflow:hidden;background-repeat:no-repeat;background-position:center center}
+.layui-side-menu .layui-nav{width:220px;margin-top:60px;background:0 0}
+.layui-layout-admin .layui-side{width:220px;top:0;z-index:1001}
+.layadmin-pagetabs,.layui-layout-admin .layui-body,.layui-layout-admin .layui-footer,.layui-layout-admin .layui-layout-left{left:220px}
+.layui-center{text-align:center!important}
+.layui-upload .layui-upload-drag{width:63%;height:82px}
+.layui-upload .layui-upload-drag img{max-width:195px}
+.layui-main{width:auto;margin:0 0}
+.layui-form[lay-size=sm] .layui-input{height:30px;padding-right:0}
+.layui-form[lay-size=sm] .layui-form-label{padding:6px 15px;width:auto!important}
+.layui-form[lay-size=sm] .layui-form-select dl{padding:0!important;top:auto!important}
+.layui-form[lay-size=sm] .layui-form-select dl dd{line-height:30px!important}
+.layui-form[lay-size=sm] .layui-form-select dl dt{line-height:30px!important}
+.layui-side-menu{background-color:#344058!important}
+.layui-form-checked[lay-skin=primary] i{border-color:#1e9fff;background-color:#1e9fff}
+.layui-elem-quote{border-left:5px solid #1e9fff}
+.layui-nav .layui-this:after,.layui-nav-bar,.layui-nav-tree .layui-nav-itemed:after{background-color:#1e9fff!important;color:#fff}
+.layui-nav-tree .layui-nav-child dd.layui-this{background-color:#1e9fff!important;color:#fff}
+.layui-nav-tree .layui-nav-child dd.layui-this,.layui-nav-tree .layui-nav-child dd.layui-this a,.layui-nav-tree .layui-this,.layui-nav-tree .layui-this>a,.layui-nav-tree .layui-this>a:hover{background-color:#1e9fff!important;color:#fff}
+.layui-nav-child dd.layui-this{background-color:#1e9fff!important;color:#fff}
+.layui-form-select dl dd.layui-this{background-color:#1e9fff!important}
+
+/*导航设置*/
+.layui-nav .layui-nav-item>a{color:#fff}
+.layui-layout-left{padding:0}
+.layui-layout-left .layui-this{background-color:#3385ff!important;color:#fff}
+.layui-layout-left .layui-nav-item{min-width:125px;cursor:pointer}
+.layui-layout-left .layui-nav-item a{padding:0 10px}
+.layui-layout-left .layui-nav-item dd a{padding:0 30px}
+.layui-layout-left .layui-this:after{content:none}
+.layui-layout-left .layui-this:before{content:none}
+.layui-layout-left .layui-this:active{content:none}
+
+/*自定义文字颜色*/
+.layui-text-red{color:red}
+.layui-text-orange{color:orange}
+.layui-text-green{color:green}
+.layui-text-cyan{color:cyan}
+.layui-text-blue{color:blue}
+.layui-text-black{color:black}
+.layui-text-gray{color:gray}
+
+/*自定义按钮*/
+.layui-btn-success{background-color:#1c84c6;border-color:#1c84c6;color:#fff}
+.layui-btn-info{background-color:#23c6c8;border-color:#23c6c8;color:#fff}
+
+/*分页*/
+.layui-laypage li{display: inline-block;}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{background-color:#1E9FFF;}
+.layui-laypage .active,.layui-laypage .active:hover{background-color:#009688;color:#ffffff;}
+
+/*搜索栏*/
+.layui-panel-search{background: #FAFAFA;border: 1px #eee solid; padding: 10px 0 5px 0;box-sizing: border-box;width: 100%;}
+.layui-panel-search .layui-form-label{display:  inline-block}
+.layui-panel-search .layui-input-block{display: inline-block; margin-left:0px}
+.layui-panel-search .layui-btn-sm{margin-top: -2px;}

@@ -1,0 +1,204 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>编辑角色</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">角色名称</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.roleName}" name="roleName" id="roleName" lay-verify="required|verifInput|verifySpace" lay-verType="tips" lay-reqText="请输入角色名称" placeholder="请输入角色名称" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">角色排序</label>
+		<div class="layui-input-block">
+			<input type="number" th:value="${info.roleSort}" name="roleSort" id="roleSort" lay-verify="required|number|verifyNumber" lay-verType="tips" lay-reqText="请输入角色排序" placeholder="请输入角色排序" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">角色状态</label>
+		<div class="layui-input-block">
+			<select name="status" id="status" lay-verify="required" lay-verType="tips" lay-reqText="请选择角色" class="layui-select">
+				<option value="">请选择状态</option>
+				<option value="1" th:selected="${info.status==1?true:false}">开启</option>
+				<option value="2" th:selected="${info.status==2?true:false}">禁用</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">角色权限</label>
+		<div class="layui-input-block">
+			<div class="layui-unselect layui-form-select treeSelect">
+				<div class="layui-select-title">
+					<span  class="layui-input layui-unselect" th:text="${menuTexts}">选择角色权限</span>
+					<input class="layui-select" th:value="${menuIds}" type="hidden" name="menuIds" lay-verify="required" lay-reqText="请选择角色权限">
+					<i class="layui-edge"></i>
+				</div>
+				<dl class="layui-anim layui-anim-upbit">
+					<dd>
+						<ul id="treeList"></ul>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">备注说明</label>
+		<div class="layui-input-block">
+			<textarea lay-verify="verifInput" name="remarks" th:text="${info.remarks}" id="remarks" placeholder="请输入备注说明" class="layui-textarea">
+			</textarea>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<input type="hidden" name="roleId" th:value="${info.roleId}" lay-verify="required" lay-verType="tips" lay-reqText="ID不能为空" class="layui-input">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+<style type="text/css">
+	.treeSelect .layui-select-title span {
+		line-height: 30px;
+		overflow: hidden;
+	}
+	.layui-form-select dl{
+		padding: 0;
+	}
+</style>
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+	layui.use(['jquery', 'form', 'layer', 'tree'], function()
+	{
+		var $ = layui.jquery, layer = layui.layer, tree = layui.tree,form = layui.form;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+			verifyNumber:function (value)
+			{
+				if(value && value - 0 < 0){
+					return "排序不得小于0";
+				}
+			},
+			verifySpace:function (value)
+			{
+				return verifySpace(value);
+			},
+		})
+
+		$.get('/admin/menu/tree', function(json)
+		{
+			if(json.code==200)
+			{
+				tree.render({
+					id: "menuId",
+					elem: "#treeList",
+					data: json.data,
+					showCheckbox: true,
+					oncheck: function(node)
+					{
+						var menuText = [], menuIds = [], checkData = tree.getChecked('menuId');
+						if(checkData.length > 0)
+						{
+							menuIds = getCheckedTreeIds(checkData);
+							menuText = getCheckedTreeNames(checkData);
+						}else{
+							menuText = ["选择角色权限"];
+						}
+						var that = $($(this)[0].elem).parents(".layui-form-select");
+						that.removeClass("layui-form-selected").find(".layui-select-title span").html(menuText).end().find("input:hidden[name='menuIds']").val(menuIds);
+					}
+				})
+				tree.setChecked('menuId', $("input[name='menuIds']").val().split(","));
+			}
+		}, 'json')
+
+		function getCheckedTreeIds(data)
+		{
+			var ids = "";
+			$.each(data, function (index, item)
+			{
+				if (ids != "")
+				{
+					ids = ids + "," + item.id;
+				}
+				else {
+					ids = item.id;
+				}
+				var i = getCheckedTreeIds(item.children);
+				if (i != "") {
+					ids = ids + "," + i;
+				}
+			});
+			return ids;
+		}
+
+		function getCheckedTreeNames(data)
+		{
+			var names = "";
+			$.each(data, function (index, item)
+			{
+				if (names != "")
+				{
+					names = names + "," + item.name;
+				}
+				else {
+					names = item.name;
+				}
+				var i = getCheckedTreeNames(item.children);
+				if (i != "") {
+					names = names + "," + i;
+				}
+			});
+			return names;
+		}
+
+		$(".treeSelect").on("click", ".layui-select-title", function(e)
+		{
+			$(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
+			$(this).parents(".treeSelect").toggleClass("layui-form-selected");
+			layui.stope(e);
+		}).on("click", "dl i", function(e)
+		{
+			layui.stope(e);
+		});
+
+		ajaxform('submit', '/admin/role/update', 'form',
+		function(json)
+		{
+			if(json.code==200)
+			{
+				layer.msg(json.msg, {time: 1000}, function()
+				{
+					parent.layer.closeAll();
+					parent.location.reload();
+				});
+			}else{
+				layer.msg(json.msg);
+			}
+		})
+	})
+</script>
+</body>
+</html>

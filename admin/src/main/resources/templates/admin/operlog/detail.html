@@ -1,0 +1,74 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>日志详情</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form " method="post" lay-size="sm">
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">操作模块</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.title}" name="title" lay-verify="required" class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">请求地址</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.uri}" name="operUrl" lay-verify="required" class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">请求方法</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.action}" name="method" lay-verify="required" class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">请求方式</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.method}" name="requestMethod" lay-verify="required"  class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">操作状态</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${info.status==1?'成功':'失败'}" name="status"  lay-verify="required" class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">操作时间</label>
+		<div class="layui-input-block">
+			<input type="text" th:value="${#dates.format(info.createTime,'yyyy-MM-dd HH:mm:ss')}" name="createTime"  lay-verify="required"  class="layui-input layui-disabled">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">请求参数</label>
+		<div class="layui-input-block">
+			<textarea type="text" th:text="${info.params}" name="operParam" lay-verify="required" class="layui-textarea layui-disabled">
+			</textarea>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">返回参数</label>
+		<div class="layui-input-block">
+			<textarea type="text" th:text="${info.response}" name="operParam" lay-verify="required" class="layui-textarea layui-disabled">
+			</textarea>
+		</div>
+	</div>
+</form>
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>基本资料</title>
+	<style type="text/css">
+		.box-border{background-color:#fafafa}
+		.box-card{border-radius:0;border:1px #eee solid}
+		.ibox-content{padding-top:15px}
+		.box-img{height:180px;width:90%;text-align:center}
+		.img-show{width:120px;height:120px;border-radius:50%;padding-top:10px}
+		.img-show:hover{cursor:pointer}
+		.img-show:hover::before{content:'';display:block;width:120px;height:120px;background-size:120px 120px;opacity:.5;z-index:999}
+		.txt-upload{color:#337ab7;font-size:14px}
+	</style>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">控制台</a><a><cite>基本资料</cite></a>
+	</div>
+	<hr />
+
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md4">
+			<div class="layui-card box-card">
+				<div class="layui-card-header box-border">个人资料</div>
+				<div class="layui-card-body">
+					<div class="ibox-content">
+						<div class="box-img">
+							<img src="/admin/user/avatar" class="img-show img-upload">
+							<div>
+								<a class="txt-upload img-upload" href="javascript:void(0)" >修改头像</a>
+							</div>
+						</div>
+						<table class="layui-table">
+							<tbody>
+							<tr>
+								<td>登录名称：</td>
+								<td><span th:text="${user.username}"></span></td>
+							</tr>
+							<tr>
+								<td>工 厂：</td>
+								<td><span th:text="${siteName}"></span></td>
+							</tr>
+							<tr>
+								<td>状 态：</td>
+								<td><span th:text="${user.status == 1 ? '启用':'禁用'} "></span></td>
+							</tr>
+							<tr>
+								<td>手 机：</td>
+								<td><span th:text="${user.phone}"></span></td>
+							</tr>
+							<tr>
+								<td>邮 箱：</td>
+								<td><span th:text="${user.email}"></span></td>
+							</tr>
+							<tr>
+								<td>创建时间：</td>
+								<td><span th:text="${#dates.format(user.createTime,'yyyy-MM-dd')}"></span></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-col-md8">
+			<div class="layui-card box-card">
+				<div class="layui-card-header box-border">基本资料</div>
+				<div class="layui-card-body">
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<form id="form" class="layui-form" method="post" lay-size="sm">
+								<div class="layui-form-item">
+									<label class="layui-form-label layui-required">昵&emsp;称：</label>
+									<div class="layui-input-block">
+										<input type="text" th:value="${user.nickname}" name="nickname" id="nickname" lay-verify="required|verifInput|verifySpace" lay-verType="tips" lay-reqText="请输入用户名" placeholder="请输入用户名" class="layui-input">
+									</div>
+								</div>
+
+								<div class="layui-form-item">
+									<label class="layui-form-label">性&emsp;别：</label>
+									<div class="layui-input-block">
+										<select name="sex" id="sex" lay-verify="required" lay-verType="tips" lay-reqText="请选择性别" class="layui-select">
+											<option value="0">请选择性别</option>
+											<option value="1" th:selected="${user.sex==1?true:false}">男</option>
+											<option value="2" th:selected="${user.sex==2?true:false}">女</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="layui-form-item">
+									<label class="layui-form-label layui-required">手&emsp;机：</label>
+									<div class="layui-input-block">
+										<input type="text" th:value="${user.phone}" name="phone" id="phone" lay-verify="required|phone|number" lay-verType="tips" lay-reqText="请输入手机号码" placeholder="请输入手机号码" class="layui-input">
+									</div>
+								</div>
+
+								<div class="layui-form-item">
+									<label class="layui-form-label layui-required">邮&emsp;箱：</label>
+									<div class="layui-input-block">
+										<input type="text" th:value="${user.email}" name="email" id="email" lay-verify="required|email" lay-verType="tips" lay-reqText="请输入用户邮箱" placeholder="请输入用户邮箱" class="layui-input">
+									</div>
+								</div>
+
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+											<i class="layui-icon layui-icon-ok"></i> 提交
+										</button>
+										<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+											<i class="layui-icon layui-icon-return"></i> 重置
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload'], function()
+	{
+		var upload = layui.upload,form = layui.form;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+			verifySpace:function (value)
+			{
+				return verifySpace(value);
+			},
+		})
+
+		upload.render({
+			elem: '.img-upload',
+			accept: 'images',
+			size: 5000,
+			url: '/admin/user/avatar',
+			done: function(res) {
+				if(res.code === 200) {
+					window.history.go(0);
+				}else {
+					layer.msg(res.msg);
+				}
+			}
+		})
+
+		ajaxform('submit', '/admin/user/profile', 'form',
+		function(json) {
+			if(json.code==200) {
+				layer.msg(json.msg, {time: 1000}, function()
+				{
+					parent.layer.closeAll();
+					parent.location.reload();
+				});
+			}else{
+				layer.msg(json.msg);
+			}
+		})
+	})
+</script>
+</body>
+</html>

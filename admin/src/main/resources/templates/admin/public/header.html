@@ -1,0 +1,22 @@
+<div class="layui-header">
+	<div class="layui-logo"><a href="/admin/index" th:text="${website}"></a></div>
+	<ul class="layui-nav layui-layout-right">
+		<li class="layui-nav-item layui-hide-xs" id="fullscreen">
+			<a href="javascript:void(0)">
+				<i class="layui-icon layui-icon-screen-full"></i>
+			</a>
+		</li>
+
+		<li class="layui-nav-item">
+			<a href="javascript:;" >
+				<img src="/admin/user/avatar" class="layui-nav-img" />
+				<th:block th:text="${session.admin.username}"></th:block>
+			</a>
+			<dl class="layui-nav-child">
+				<dd><a href="/admin/user/profile">基本资料</a></dd>
+				<dd><a href="javascript:void(0)" onclick="showBox('修改密码',400,300,1,'/admin/editPass')">修改密码</a></dd>
+				<dd><a href="javascript:void(0)" id="logout-btn">退出登录</a></dd>
+			</dl>
+		</li>
+	</ul>
+</div>

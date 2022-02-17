@@ -1,0 +1,194 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+    <title>物料管理</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+    <div class="layui-breadcrumb">
+        <a href="#">基础资料</a><a><cite>物料管理</cite></a>
+    </div>
+    <hr/>
+    <form class="layui-form" lay-size="sm">
+        <div class="layui-panel-search">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">产品编码：</label>
+                <div class="layui-input-block">
+                    <input lay-verify="verifInput" th:value="${#strings.trim(params.get('sku_no'))}" name="sku_no"
+                           placeholder="请输入产品编码" autocomplete="off" class="layui-input" type="text">
+                </div>
+            </div>
+            <button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+                <i class="layui-icon layui-icon-search"></i>搜 索
+            </button>
+        </div>
+    </form>
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </button>
+            <button th:if="${#lists.contains(permissions, 'admin:material:excel')}"
+                    class="layui-btn-warm layui-btn layui-btn-sm" id="upload-material">
+                <i class="layui-icon layui-icon-upload-drag"></i> 导入物料
+            </button>
+            <button th:if="${#lists.contains(permissions, 'admin:material:add')}"
+                    class="layui-btn-normal layui-btn layui-btn-sm mr-10"
+                    onclick="showBox('新增物料', 650, 580, 1, '/admin/material/add')">
+                <i class="layui-icon layui-icon-addition"></i>新增物料
+            </button>
+            <a class="layui-btn-danger layui-btn layui-btn-sm" onclick="download1()">
+                <i class="layui-icon layui-icon-download-circle"></i>下载导入模板
+            </a>
+        </div>
+    </script>
+    <div class="layui-form">
+        <table id="table" lay-filter="material"></table>
+    </div>
+    <script th:inline="javascript" type="text/html" id="bartool">
+        <a th:if="${#lists.contains(permissions, 'admin:material:edit')}"
+           class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
+            <i class="layui-icon layui-icon-edit"></i>编辑
+        </a>
+        <a th:if="${#lists.contains(permissions, 'admin:material:delete')}"
+           class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">
+            <i class="layui-icon layui-icon-delete"></i>删除
+        </a>
+    </script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload'], function()
+	{
+		var table = layui.table, $ = layui.jquery, upload = layui.upload, search = window.location.search,form = layui.form,util = layui.util;
+		var toolbar = $.trim($("#bartool").html())=="" ? true : false;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				let res = verifInputValue(value);
+				if(res !== undefined){
+					return res;
+				}
+				return prohibitChinese(value);
+			},
+		})
+
+		let cols = [{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'sku_no', title: '产品编码',  width: '9%'},
+			{field: 'sku_desc', title: '产品名称', width: '22%'},
+			{field: 'sku_spec', title: '产品规格', width: '7%'},
+			{field: 'carton_unit', title: '外包装单位', width:'8%'},
+			{field: 'pallet2carton', title: '外包装单品数', width:'7%'},
+			{field: 'mid_name_eng', title: '产品英文名称', width:'13%'},
+			{field: 'product_name', title: '产品简称', width:'10%'},
+			{field: 'family', title: '厂家', width:'14%'},
+			{field: 'product_group', title: '产品分类', width:'7%'},
+			{field: 'sub_group', title: '产品子类', width:'7%'},
+			{field: 'packages', title: '包装规格', width:'7%'},
+			{field: 'labelling_type', title: '标签类型', width:'7%'},
+			{field: 'source_type', title: '来源类型', width:'7%'},
+			{field: 'source', title: '创建方式', width:'8%', templet:
+			function (row) {
+				return row.source==1?"接口":"手动";
+			}},
+			{field: 'update_user', title: '更新人', width:'6%'},
+			{field: 'update_time', title: '更新时间', width:'11%'},
+			{align: 'center', title: '操作', toolbar: '#bartool', width:'14%', fixed: 'right', hide: toolbar}];
+
+		let url = '/admin/material/data' + $.trim(search);
+
+		table.render(renderParam(url, cols));
+
+		table.on('tool(material)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'del')
+			{
+				layer.confirm('确定要删除吗？', function(index)
+				{
+					$.post("/admin/material/delete", {id: data.id},
+					function(json)
+					{
+						if(json.code==200)
+						{
+							parent.layer.closeAll();
+							parent.location.reload();
+						}else{
+							layer.msg(json.msg);
+						}
+					},"json");
+				});
+			} else if(layEvent === 'edit')
+			{
+				showBox('编辑物料', 650, 580, 1, '/admin/material/edit?id='+data.id);
+			}
+		});
+
+        download1 = function()
+        {
+            var method = 'post';
+			var url = '/admin/material/download';
+			var xhr = new XMLHttpRequest();
+			xhr.open(method, url, true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+			xhr.onload = function ()
+			{
+				if (this.status == 200)
+				{
+					var blob = this.response;
+					if (typeof window.navigator.msSaveBlob !== 'undefined')
+					{
+						window.navigator.msSaveBlob(blob, "导入模版.xlsx");
+						return;
+					}
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					a.download = "导入模版.xlsx";
+					a.click();
+				}
+			};
+			xhr.send(JSON.stringify({name: '',status: ''}));
+        }
+
+		upload.render({
+			accept:'file',
+			exts: 'xlsx|xls',
+			elem: '#upload-material',
+			url: '/admin/material/excel',
+			size: 5120, // 限制5mb
+			before: function(obj)
+			{
+				layer.msg('正在导入物料中...',{
+					icon: 16,
+					shade: 0.2,
+					time: false
+				});
+			},
+			done: function(json)
+			{
+				if(json.code==200)
+				{
+					layer.msg(json.msg, function()
+					{
+						parent.location.reload();
+					});
+				}else{
+					layer.msg(json.msg);
+				}
+			},
+			error: function()
+			{
+				layer.msg(json.msg);
+			}
+		});
+	})
+</script>
+</body>
+</html>

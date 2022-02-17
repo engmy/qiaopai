@@ -1,0 +1,17 @@
+server:
+  port: 6002
+spring:
+  application:
+    name: 壳牌生产交互接口系统
+    copyright: 优豚信息科技（上海）有限公司
+  profiles:
+    active: dev
+knife4j:
+  enable: true
+  production: false
+  basic:
+    enable: true
+    username: qixuan
+    password: qixuan@123abc
+logging:
+  config: classpath:logback-api.xml

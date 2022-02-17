@@ -1,0 +1,30 @@
+server:
+  port: 6001
+  servlet:
+    session:
+      timeout: 2592000s
+spring:
+  application:
+    name: 壳牌生产交互管理系统
+    copyright: 优豚信息科技（上海）有限公司
+  profiles:
+    active: dev
+  thymeleaf:
+    enabled: true
+    encoding: utf-8
+    prefix: classpath:/templates/
+    cache: false
+    mode: HTML
+    suffix: .html
+sa-token:
+  token-name: satoken
+  timeout: 2592000
+  activity-timeout: -1
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+logging:
+  config: classpath:logback-admin.xml
+custom:
+  export-excel-file-path: "D://壳牌项目/excel"

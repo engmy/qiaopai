@@ -1,0 +1,159 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>中台数据</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>中台数据</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-panel-search">
+			<div class="layui-input-inline">
+				<label class="layui-form-label">优码工单：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('job_no'))}" name="job_no" placeholder="请输入优码工单" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+				<i class="layui-icon layui-icon-search"></i>搜 索
+			</button>
+		</div>
+	</form>
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+				<i class="layui-icon layui-icon-refresh"></i> 刷新
+			</button>
+		</div>
+	</script>
+	<div class="layui-form">
+		<table id="table" lay-filter="role"></table>
+	</div>
+	<script th:inline="javascript" type="text/html" id="bartool">
+		<a th:if="${#lists.contains(permissions, 'admin:product:view')}"  class="layui-btn layui-btn-normal layui-btn-sm" lay-event="view">
+			<i class="layui-icon"></i> 接口数据
+		</a>
+	</script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table'], function()
+	{
+		var table = layui.table, $ = layui.jquery,
+				form = layui.form,
+				search = window.location.search;
+		var toolbar = $.trim($("#bartool").html())=="" ? true : false;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				let res = verifInputValue(value);
+				if(res !== undefined){
+					return res;
+				}
+				return prohibitChinese(value);
+			},
+		})
+
+		let cols = [
+			{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'job_no',  title: '优码工单',  width: '20%'},
+			{title: '工厂编码', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productFactoryCode;
+						}},
+			{title: '生产工厂名称', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productFactoryName;
+						}},
+			{title: '产品编码', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productCode;
+						}},
+			{title: '产线名称', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productLine;
+						}},
+			{title: '生产批次', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productBatch;
+						}},
+			{title: '生产时间', width:'12%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.productionTime;
+						}},
+			{title: '实物托盘码', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.vcode;
+						}},
+			{title: '虚拟托盘码', width:'10%', templet:
+						function (row)
+						{
+							var jsonData = JSON.parse(row.data_json);
+							return jsonData.virtualCode;
+						}},
+			{field: 'carton_num', title: '桶数量',  width: '6%'},
+			{field: 'http_status', title: '上传状态', width:'6%', templet:
+						function (row)
+						{
+							var texts = {0: "待上传", 100: "上传中", 200: "已上传", 500: "上传异常"};
+							return texts[row.http_status] ? texts[row.http_status] : "";
+						}},
+			{field: 'upload_time', title: '上传时间',  width: '12%'},
+			{field: 'create_time', title: '创建时间', width:'12%'},
+			{align: 'center', title: '操作', toolbar: '#bartool', width:'10%', fixed: 'right', hide: toolbar},
+		];
+		let url = '/admin/product/data' + $.trim(search);
+
+		table.render(renderParam(url,cols));
+
+		table.on('tool(role)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'view')
+			{
+				if(!data.job_no)
+				{
+					layer.msg("产品还未上传到优码平台");
+					return false;
+				}
+				$.get('/admin/product/view', {job_no: data.job_no, company_id: data.company_id},
+				function (json)
+				{
+					if(json.code==200)
+					{
+						var result = JSON.stringify(JSON.parse(json.data), null, 4);
+						layer.open({
+							title: '接口数据',
+							area: ['720px', '720px'],
+							content: "<pre style='font: 14px Courier New,Menlo,Monaco'>"+result+"</pre>"
+						});
+					}
+				}, 'json');
+			}
+		});
+	})
+</script>
+</body>
+</html>

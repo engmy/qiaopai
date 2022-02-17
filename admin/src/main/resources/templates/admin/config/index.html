@@ -1,0 +1,108 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>参数配置</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>参数配置</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-inline">
+			<a th:if="${#lists.contains(permissions, 'admin:config:add')}" href="javascript:void(0)" class="layui-btn-normal layui-btn layui-btn-sm fr" onclick="showBox('新增配置', 650, 580, 1, '/admin/config/add')">
+				<i class="layui-icon layui-icon-addition"></i>新增配置
+			</a>
+		</div>
+		<div class="layui-tab layui-tab-card" lay-filter="config-tab">
+			<ul class="layui-tab-title">
+				<li data-id="1" data-name="system"  th:if="${#lists.contains(permissions, 'admin:config:system')}">系统配置</li>
+				<li data-id="2" data-name="youma"   th:if="${#lists.contains(permissions, 'admin:config:youma')}">优码中台</li>
+				<li data-id="3" data-name="company" th:if="${#lists.contains(permissions, 'admin:config:company')}">企业配置</li>
+				<li data-id="4" data-name="site"    th:if="${#lists.contains(permissions, 'admin:config:site')}">工厂配置</li>
+				<li data-id="5" data-name="email"   th:if="${#lists.contains(permissions, 'admin:config:email')}">邮件配置</li>
+				<li data-id="6" data-name="repost"  th:if="${#lists.contains(permissions, 'admin:config:repost')}">报表配置</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<form id="form" class="layui-form" method="post" lay-size="sm">
+						<div id="tmpl-content" style="margin:25px"></div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script id="tmpl" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<div class="layui-form-item layui-col-md4">
+			<label class="layui-form-label layui-required">{{d[i].config_name}}</label>
+			<div class="layui-input-block">
+				<input value="{{d[i].config_value}}" type="text" name="{{d[i].config_key}}" id="{{d[i].config_key}}" lay-verify="required" lay-verType="tips" lay-reqText="请输入{{d[i].config_name}}" placeholder="请输入{{d[i].config_name}}" class="layui-input">
+			</div>
+		</div>
+		{{# } }}
+		{{# if (d.length > 0) { }}
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submitp">
+					<i class="layui-icon layui-icon-ok"></i> 提交
+				</button>
+				<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+					<i class="layui-icon layui-icon-return"></i> 重置
+				</button>
+			</div>
+		</div>
+		{{# } }}
+	</script>
+</div>
+
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'laytpl'], function()
+	{
+		var $ = layui.jquery, form = layui.form, laytpl = layui.laytpl, element = layui.element;
+		element.on('tab(config-tab)', function(data)
+		{
+			getConfigList($(this).data("id"));
+			form.render();
+		});
+
+		// 动态加载配置
+		getConfigList = function (group_id)
+		{
+			$.get("/admin/config/data",{group_id: group_id},
+			function (json)
+			{
+				laytpl($("#tmpl").html()).render(json.data, function(html)
+				{
+					$("#tmpl-content").html(html);
+				});
+			}, 'json');
+		}
+
+		// 提交当前表单
+		form.on("submit(submitp)", function(data)
+		{
+			$.post("/admin/config/update", data.field,
+			function(json)
+			{
+				if(json.code==200)
+				{
+					layer.msg(json.msg, {time: 1000}, function()
+					{
+						layer.closeAll();
+						location.reload();
+					});
+				}else{
+					layer.msg(json.msg);
+				}
+			},'json');
+			return false;
+		});
+
+		$(".layui-tab-title li").eq(0).addClass("layui-this");
+		getConfigList($(".layui-tab-title li").eq(0).data('id') ? $(".layui-tab-title li").eq(0).data('id') : 0);
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>选择菜单</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+	<style class="text/css">
+		.layui-form-icon .icon{font-size:20px;width:40px;height:40px;display:block;float:left;line-height:40px;text-align:center}.layui-form-icon .icon i{font-size:20px}
+	</style>
+</head>
+
+<body class="m-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+	<div class="layui-form-icon">
+		<th:block th:each="icon:${icons}">
+			<a class="icon" href="javascript:void(0)">
+				<i th:class="${'layui-icon ' + icon}"></i>
+			</a>
+		</th:block>
+	</div>
+</form>
+
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+layui.use(['jquery', 'form', 'layer'], function()
+{
+	var $ = layui.jquery, layer = layui.layer;
+	$(".layui-form-icon .icon").each(function()
+	{
+		$(this).click(function ()
+		{
+			var layuiIcon = $(this).find('i').attr('class');
+			var icon = $.trim(layuiIcon.replace('layui-icon', ''))
+			$("#icon", window.parent.document).val(icon);
+			$("#layui-icon", window.parent.document).html('<i style="font-size:20px" class="'+layuiIcon+'"></i>');
+			parent.layer.closeAll();
+		})
+	})
+})
+</script>
+</body>
+</html>

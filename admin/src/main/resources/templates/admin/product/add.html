@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新增产线</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">工厂代码</label>
+		<div class="layui-input-block">
+			<input readonly th:value="${siteNo}" type="text" name="siteNo" id="siteNo" lay-verify="required" lay-verType="tips" lay-reqText="请输入工厂代码" placeholder="请输入工厂代码" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">产线代码</label>
+		<div class="layui-input-block">
+			<input type="text" name="plineNo" id="plineNo" lay-verify="required" lay-verType="tips" lay-reqText="请输入产线代码" placeholder="请输入产线代码" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+	
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+layui.use(['jquery', 'form', 'layer'], function()
+{
+	var $ = layui.jquery, layer = layui.layer;
+
+	ajaxform('submit', '/admin/pline/insert', 'form',
+	function(json)
+	{
+		if(json.code==200)
+		{
+			layer.msg(json.msg, {time: 1000}, function()
+			{
+				parent.layer.closeAll();
+				parent.location.reload();
+			});
+		}else{
+			layer.msg(json.msg);
+		}
+	})
+})
+</script>
+</body>
+</html>

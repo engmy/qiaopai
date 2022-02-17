@@ -1,0 +1,102 @@
+09:29:04.865 [background-preinit] INFO  o.h.v.i.util.Version - [<clinit>,21] - HV000001: Hibernate Validator 6.2.0.Final
+09:29:04.873 [main] INFO  c.q.a.ApiApplication - [logStarting,55] - Starting ApiApplication using Java 11.0.6 on WINDOWS-58IB2QC with PID 25452 (D:\svn_code\壳牌\api\target\classes started by EDY in D:\svn_code\壳牌)
+09:29:04.874 [main] INFO  c.q.a.ApiApplication - [logStartupProfileInfo,663] - The following profiles are active: dev
+09:29:07.540 [main] INFO  io.undertow.servlet - [log,382] - Initializing Spring embedded WebApplicationContext
+13:49:56.901 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24001] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24001
+com.mongodb.MongoNodeIsRecoveringException: Command failed with error 11600 (InterruptedAtShutdown): 'interrupted at shutdown' on server 127.0.0.1:24001. The full response is {"operationTime": {"$timestamp": {"t": 1644990586, "i": 1}}, "ok": 0.0, "errmsg": "interrupted at shutdown", "code": 11600, "codeName": "InterruptedAtShutdown", "$clusterTime": {"clusterTime": {"$timestamp": {"t": 1644990586, "i": 1}}, "signature": {"hash": {"$binary": {"base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=", "subType": "00"}}, "keyId": 0}}}
+	at com.mongodb.internal.connection.ProtocolHelper.createSpecialException(ProtocolHelper.java:242)
+	at com.mongodb.internal.connection.ProtocolHelper.getCommandFailureException(ProtocolHelper.java:171)
+	at com.mongodb.internal.connection.InternalStreamConnection.receiveCommandMessageResponse(InternalStreamConnection.java:358)
+	at com.mongodb.internal.connection.InternalStreamConnection.receive(InternalStreamConnection.java:304)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:218)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+13:49:56.945 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24003] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24003
+com.mongodb.MongoSocketWriteException: Exception sending message
+	at com.mongodb.internal.connection.InternalStreamConnection.translateWriteException(InternalStreamConnection.java:618)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendMessage(InternalStreamConnection.java:496)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendCommandMessage(InternalStreamConnection.java:327)
+	at com.mongodb.internal.connection.InternalStreamConnection.send(InternalStreamConnection.java:294)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:209)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.base/java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.base/java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:110)
+	at java.base/java.net.SocketOutputStream.write(SocketOutputStream.java:150)
+	at com.mongodb.internal.connection.SocketStream.write(SocketStream.java:99)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendMessage(InternalStreamConnection.java:493)
+	... 5 common frames omitted
+13:49:56.945 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24002] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24002
+com.mongodb.MongoSocketWriteException: Exception sending message
+	at com.mongodb.internal.connection.InternalStreamConnection.translateWriteException(InternalStreamConnection.java:618)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendMessage(InternalStreamConnection.java:496)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendCommandMessage(InternalStreamConnection.java:327)
+	at com.mongodb.internal.connection.InternalStreamConnection.send(InternalStreamConnection.java:294)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:209)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.net.SocketException: Connection reset by peer: socket write error
+	at java.base/java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.base/java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:110)
+	at java.base/java.net.SocketOutputStream.write(SocketOutputStream.java:150)
+	at com.mongodb.internal.connection.SocketStream.write(SocketStream.java:99)
+	at com.mongodb.internal.connection.InternalStreamConnection.sendMessage(InternalStreamConnection.java:493)
+	... 5 common frames omitted
+13:49:58.966 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24003] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24003
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:70)
+	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:143)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:188)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/java.net.PlainSocketImpl.waitForConnect(Native Method)
+	at java.base/java.net.PlainSocketImpl.socketConnect(PlainSocketImpl.java:107)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:399)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:242)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:224)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:403)
+	at java.base/java.net.Socket.connect(Socket.java:608)
+	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:107)
+	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:79)
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:65)
+	... 4 common frames omitted
+13:49:58.966 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24002] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24002
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:70)
+	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:143)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:188)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/java.net.PlainSocketImpl.waitForConnect(Native Method)
+	at java.base/java.net.PlainSocketImpl.socketConnect(PlainSocketImpl.java:107)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:399)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:242)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:224)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:403)
+	at java.base/java.net.Socket.connect(Socket.java:608)
+	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:107)
+	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:79)
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:65)
+	... 4 common frames omitted
+13:50:08.959 [cluster-ClusterId{value='620c87f5a4353b05c20b2902', description='null'}-127.0.0.1:24001] INFO  o.m.driver.cluster - [info,76] - Exception in monitor thread while connecting to server 127.0.0.1:24001
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:70)
+	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:143)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:188)
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:144)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/java.net.PlainSocketImpl.waitForConnect(Native Method)
+	at java.base/java.net.PlainSocketImpl.socketConnect(PlainSocketImpl.java:107)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:399)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:242)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:224)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:403)
+	at java.base/java.net.Socket.connect(Socket.java:608)
+	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:107)
+	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:79)
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:65)
+	... 4 common frames omitted

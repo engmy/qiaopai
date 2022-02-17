@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" 	  		   content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="pragma"		   content="no-cache">
+    <meta http-equiv="cache-control"   content="no-cache">
+    <meta http-equiv="expires" 		   content="0"> 
+	<title th:text="${website}"></title>
+    <link href="/admin/css/login.css"  	   rel="stylesheet" type="text/css" />
+    <link href="/admin/layui/css/layui.css" rel="stylesheet" type="text/css" />
+</head>
+	
+<body>
+	<div class="login">
+	    <h1 th:text="${website}"></h1>
+	    <form class="layui-form" lay-size="sm">
+	    	<div class="layui-form-item">
+				<input class="layui-input" name="username" placeholder="账号" maxlength="16" lay-verify="required" autocomplete="off" type="text">
+		    </div>
+		    <div class="layui-form-item">
+				<input class="layui-input" name="password" placeholder="密码" maxlength="16" lay-verify="required" autocomplete="off"  type="password">
+		    </div>
+
+		    <div class="layui-form-item form_code">
+				<input class="layui-input" name="captcha" placeholder="验证码" maxlength="4" lay-verify="required" autocomplete="off" type="text">
+				<div class="code">
+					<img src="/admin/captcha" id="codeimg" class="codeimg" onclick="javascript:this.src='/admin/captcha?t='+Math.random()" />	
+				</div>
+		    </div>
+			<button class="layui-btn layui-btn-normal login_btn" type="button">登录</button>
+			<div class="layui-form-item layui-trans">
+				<label th:text="${'版权：' + copyright}"></label>
+			</div>
+		</form>
+	</div>
+    <script type="text/javascript" src="/admin/layui/layui.js"></script>
+	<script type="text/javascript" src="/admin/js/common.js"></script>
+	<script type="text/javascript">
+	    layui.use(['layer','jquery'], function () 
+	    {
+	    	var $ = layui.jquery;
+			$(document).keypress(function (e)
+			{
+			     if (e.which == 13) {
+			         $('button[type="button"]').click();
+			     }
+			});
+	    	
+	        // 登录验证
+	        $('button[type="button"]').click(function () 
+	        {
+	            var username = $('input[name="username"]').val();
+	            var password = $('input[name="password"]').val();
+	            var captcha = $('input[name="captcha"]').val();
+	            
+		        if(!username) {
+					layer.msg('请输入账号！');
+					return false;
+		        }
+		        if(!password) {
+					layer.msg('请输入密码！');
+					return false;
+		        }
+		        if(!captcha) {
+		        	layer.msg('请输入验证码！');
+					return false;
+		        }
+
+	          	//登录
+	          	$('button[type="button"]').attr('disabled',"true").text("登录中...");
+	         	var jsonData = {username: $.trim(username), password: $.trim(password), captcha: $.trim(captcha)};
+	         	
+	          	$.post('/admin/dologin', jsonData,
+	          	function(json)
+	          	{
+					$('button[type="button"]').removeAttr("disabled").text("登录");
+					if(json.code==200)
+					{
+						window.location.href = '/admin/index'
+					}else if(json.code==401)
+					{
+						layer.msg(json.msg, {time: 1000}, function() {
+							$("#codeimg").attr('src', '/admin/captcha?t='+Math.random());
+						});
+					}else if(json.code == 406){
+						layer.msg(json.msg, {time: 1000}, function() {
+							showBox('修改密码',400,300,1,'/admin/editPwd?name='+username);
+						});
+					}
+					else{
+						layer.msg(json.msg);
+					}
+	          	}, 'json');
+	        })
+	    })
+    </script>
+</body>
+</html>

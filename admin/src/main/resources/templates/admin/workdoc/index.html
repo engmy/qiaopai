@@ -1,0 +1,199 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>工单管理</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+    <div class="layui-breadcrumb">
+        <a href="#">基础资料</a><a><cite>工单管理</cite></a>
+    </div>
+    <hr/>
+    <form class="layui-form" lay-size="sm" id="form">
+        <div class="layui-panel-search">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">工单号：</label>
+                <div class="layui-input-block">
+                    <input th:value="${#strings.trim(params.get('doc_no'))}" name="doc_no" placeholder="请输入工单号"
+                           autocomplete="off" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">产品编码：</label>
+                <div class="layui-input-block">
+                    <input lay-verify="verifInput" th:value="${#strings.trim(params.get('sku_no'))}" name="sku_no"
+                           placeholder="请输入产品编码" autocomplete="off" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">产品批号：</label>
+                <div class="layui-input-block">
+                    <input lay-verify="verifInput" th:value="${#strings.trim(params.get('lot_no'))}" name="lot_no"
+                           placeholder="请输入产品批号" autocomplete="off" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">产线：</label>
+                <div class="layui-input-block">
+                    <select id="pline_no" name="pline_no" class="layui-select" lay-verType="tips" lay-reqText="请输入产线代码"
+                            lay-filter="plineNo" lay-search>
+                        <option value="">请选择产线代码</option>
+                        <th:block th:each="vo:${lineList}">
+                            <option th:value="${vo.plineNo}" th:text="${vo.plineNo}"
+                                    th:selected="${params.get('pline_no')==vo.plineNo?true:false}"></option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+            <button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+                <i class="layui-icon layui-icon-search"></i>搜 索
+            </button>
+        </div>
+    </form>
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </button>
+            <button th:if="${#lists.contains(permissions, 'admin:workdoc:add')}"
+                    class="layui-btn-normal layui-btn layui-btn-sm"
+                    onclick="showBox('新增工单', 650, 620, 1, '/admin/workdoc/add')">
+                <i class="layui-icon layui-icon-addition"></i>新增工单
+            </button>
+            <a class="layui-btn-danger layui-btn layui-btn-sm" onclick="exportWorkDoc()">
+                <i class="layui-icon layui-icon-download-circle"></i>工单导出
+            </a>
+        </div>
+    </script>
+    <div class="layui-form">
+        <table id="table" lay-filter="workdoc"></table>
+    </div>
+    <script th:inline="javascript" type="text/html" id="bartool">
+        <a th:if="${#lists.contains(permissions, 'admin:workdoc:detail')}"
+           class="layui-btn layui-btn-normal layui-btn-sm" lay-event="view">
+            <i class="layui-icon layui-icon-list"></i> 明细
+        </a>
+        <!--<a th:if="${#lists.contains(permissions, 'admin:workdoc:edit')}" class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
+            <i class="layui-icon layui-icon-edit"></i> 编辑
+        </a>-->
+        <a th:if="${#lists.contains(permissions, 'admin:workdoc:delete')}"
+           class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">
+            <i class="layui-icon layui-icon-delete"></i> 删除
+        </a>
+    </script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload', 'util'], function()
+	{
+		var table = layui.table, $ = layui.jquery, search = window.location.search,form = layui.form,util = layui.util;
+		var toolbar = $.trim($("#bartool").html())=="" ? true : false;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				let res = verifInputValue(value);
+				if(res !== undefined){
+					return res;
+				}
+				return prohibitChinese(value);
+			}
+		})
+
+		let cols = [
+			{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'doc_no', title: '工单号',  width: '25%'},
+			{field: 'sku_no', title: '产品编码',  width: '8%'},
+			{field: 'sku_desc', title: '产品名称', width: '18%'},
+			{field: 'extend2', title: '灌装单号', width:'8%'},
+			{field: 'lot_no', title: '产品批号', width: '8%'},
+			{field: 'pline_no', title: '产线代码', width:'8%'},
+			{field: 'mfg_date', title: '生产日期', width:'7%'},
+			{field: 'req_qty', title: '计划数量', width:'7%'},
+			{field: 'qty1', title: '实际数量', width:'7%'},
+			{field: 'qty2', title: '已上传数量', width:'8%'},
+			{field: 'doc_status', title: '单据状态', width:'6%', templet:
+			function (row)
+			{
+				var texts = {"00": "待执行", "10": "执行中", "30": "已完成", "40": "已上传", "50": "上传异常"};
+				return texts[row.doc_status] ? texts[row.doc_status] : "";
+			}},
+			{field: 'source', title: '创建方式', width:'6%', templet:
+			function (row) {
+				return row.source==1?"接口":"手动";
+			}},
+			{field: 'update_user', title: '更新人', width:'6%'},
+			{field: 'update_time', title: '更新时间', width:'11%'},
+			{align: 'center', title: '操作', toolbar: '#bartool', width: '20%',fixed: 'right', hide: toolbar}
+		];
+
+		let url = '/admin/workdoc/data' + $.trim(search);
+
+		table.render(renderParam(url,cols));
+
+		table.on('tool(workdoc)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'del')
+			{
+				layer.confirm('确定要删除吗？', function(index)
+				{
+					$.post("/admin/workdoc/delete", {id: data.id},
+					function(json)
+					{
+						if(json.code==200)
+						{
+							parent.layer.closeAll();
+							parent.location.reload();
+						}else{
+							layer.msg(json.msg);
+						}
+					},"json");
+				});
+			} else if(layEvent === 'edit')
+			{
+				//showBox('编辑工单', 650, 680, 1, '/admin/workdoc/edit?id='+data.id);
+			} else if(layEvent === 'view')
+			{
+				showBox('工单明细', 900, 780, 1, '/admin/relation/detail?doc_no='+encodeURIComponent(data.doc_no));
+			}
+		});
+
+		exportWorkDoc = function ()
+		{
+			var method = 'post';
+			var url = '/admin/workdoc/export';
+			var xhr = new XMLHttpRequest();
+			xhr.open(method, url, true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+			xhr.onload = function ()
+			{
+				if (this.status == 200)
+				{
+					var dateString = util.toDateString(new Date(), "yyyyMMddHHmmss");
+					var blob = this.response;
+					if (typeof window.navigator.msSaveBlob !== 'undefined')
+					{
+						window.navigator.msSaveBlob(blob, "工单数据("+dateString+").xlsx");
+						return;
+					}
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					a.download = "工单数据("+dateString+").xlsx";
+					a.click();
+				}
+			};
+			xhr.send(JSON.stringify({name: '',status: ''}));
+		}
+	})
+
+</script>
+</body>
+</html>

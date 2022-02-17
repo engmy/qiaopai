@@ -1,0 +1,104 @@
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新增配置</title>
+	<link rel="stylesheet" href="/admin/layui/css/layui.css" />
+	<link rel="stylesheet" href="/admin/css/main.css" />
+</head>
+
+<body class="mt-30 mr-30 ml-20">
+<form id="form" class="layui-form" method="post" lay-size="sm">
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">参数分组</label>
+		<div class="layui-input-block">
+			<select name="groupId" id="groupId" lay-verify="required" lay-verType="tips" lay-reqText="请选择参数分组" class="layui-select">
+				<option value="">请选择规格</option>
+				<option value="1">系统配置</option>
+				<option value="2">优码中台</option>
+				<option value="3">企业配置</option>
+				<option value="4">工厂配置</option>
+				<option value="5">邮件配置</option>
+				<option value="6">报表配置</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">参数名称</label>
+		<div class="layui-input-block">
+			<input type="text" name="configName" id="configName" lay-verify="required" lay-verType="tips" lay-reqText="请输入参数名称" placeholder="请输入参数名称" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">参数键名</label>
+		<div class="layui-input-block">
+			<input type="text" name="configKey" id="configKey" lay-verify="required" lay-verType="tips" lay-reqText="请输入参数键名" placeholder="请输入参数键名" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">参数键值</label>
+		<div class="layui-input-block">
+			<input type="text" name="configValue" id="configValue" lay-verify="required" lay-verType="tips" lay-reqText="请输入参数键值" placeholder="请输入参数键值" class="layui-input">
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label layui-required">参数类型</label>
+		<div class="layui-input-block">
+			<select name="configType" id="configType" lay-verify="required" lay-verType="tips" lay-reqText="请选择参数类型" class="layui-select">
+				<option value="">请选择参数类型</option>
+				<option value="Y">系统内置</option>
+				<option value="N">自定义</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">备注说明</label>
+		<div class="layui-input-block">
+			<textarea name="remark" id="remark" placeholder="请输入备注说明" class="layui-textarea"></textarea>
+		</div>
+	</div>
+
+	<div class="layui-form-item">
+		<div class="layui-input-block">
+			<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" lay-submit="submit" lay-filter="submit">
+				<i class="layui-icon layui-icon-ok"></i> 提交
+			</button>
+			<button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+				<i class="layui-icon layui-icon-return"></i> 重置
+			</button>
+		</div>
+	</div>
+</form>
+	
+<script src="/admin/layui/layui.js"></script>
+<script src="/admin/js/common.js"></script>
+
+<script type="text/javascript">
+layui.use(['jquery', 'form', 'layer'], function() 
+{
+	var $ = layui.jquery,form = layui.form ,layer = layui.layer;
+
+	ajaxform('submit', '/admin/config/insert', 'form',
+	function(json)
+	{
+		if(json.code==200)
+		{
+			layer.msg(json.msg, {time: 1000}, function()
+			{
+				parent.layer.closeAll();
+				parent.location.reload();
+			});
+		}else{
+			layer.msg(json.msg);
+		}
+	})
+})
+</script>
+</body>
+</html>

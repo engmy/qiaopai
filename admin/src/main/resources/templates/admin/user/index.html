@@ -1,0 +1,140 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+	<title>用户管理</title>
+</head>
+
+<body>
+<div class="layui-body p-15" layout:fragment="content">
+	<div class="layui-breadcrumb">
+		<a href="#">基础资料</a><a><cite>用户管理</cite></a>
+	</div>
+	<hr />
+	<form class="layui-form" lay-size="sm">
+		<div class="layui-panel-search">
+			<div class="layui-input-inline">
+				<label class="layui-form-label">用户名：</label>
+				<div class="layui-input-block">
+					<input lay-verify="verifInput" th:value="${#strings.trim(params.get('username'))}" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input" type="text">
+				</div>
+			</div>
+			<button class="layui-btn layui-btn-normal layui-btn-search layui-btn-sm" lay-submit="submit">
+				<i class="layui-icon layui-icon-search"></i>搜 索
+			</button>
+		</div>
+	</form>
+	<script type="text/html" id="toolbar">
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm layui-btn-info" lay-event="refresh" onclick="reload()">
+				<i class="layui-icon layui-icon-refresh"></i> 刷新
+			</button>
+			<button th:if="${#lists.contains(permissions, 'admin:user:add')}" href="javascript:void(0)" class="layui-btn-normal layui-btn layui-btn-sm" onclick="showBox('新增用户', 650, 590, 1, '/admin/user/add')">
+				<i class="layui-icon layui-icon-addition"></i>新增用户
+			</button>
+		</div>
+	</script>
+	<div class="layui-form">
+		<table id="table" lay-filter="user"></table>
+	</div>
+	<script th:inline="javascript" type="text/html" id="bartool">
+		<a th:if="${#lists.contains(permissions, 'admin:user:editpass')}" class="layui-btn layui-btn-info layui-btn-sm" lay-event="pass">
+			<i class="layui-icon layui-icon-password"></i>重置密码
+		</a>
+		<a th:if="${#lists.contains(permissions, 'admin:user:edit')}" class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
+			<i class="layui-icon layui-icon-edit"></i>编辑
+		</a>
+		<a th:if="${#lists.contains(permissions, 'admin:user:delete')}" class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">
+			<i class="layui-icon layui-icon-delete"></i>删除
+		</a>
+	</script>
+
+<!--	开启与关闭的状态显示 -->
+	<script type="text/html" id="status-tmpl">
+		{{#  if(d.status==1){ }}
+		<input type="checkbox" name="status" lay-skin="switch" checked lay-text="启用|禁用"  value={{d.user_id}}  lay-filter="status" >
+		{{#  } else { }}
+		<input type="checkbox" name="status" lay-skin="switch"  lay-text="启用|禁用"  value={{d.user_id}} lay-filter="status" >
+		{{#  } }}
+	</script>
+</div>
+
+<script src="/admin/js/common.js"></script>
+<script th:inline="javascript" type="text/javascript" layout:fragment="footer">
+	layui.use(['jquery', 'form', 'layer', 'table', 'upload'], function()
+	{
+		var table = layui.table, $ = layui.jquery, search = window.location.search,form = layui.form;
+		var toolbar = $.trim($("#bartool").html())=="" ? true : false;
+
+		// 输入框验证
+		form.verify({
+			verifInput:function(value,dom)
+			{
+				return verifInputValue(value);
+			},
+		})
+
+		let url = '/admin/user/data' + search;
+		let cols = [
+			{type: 'numbers', title: '序号', width:'5%'},
+			{field: 'username', title: '用户名',  width: '8%'},
+			{field: 'nickname', title: '昵称',  width: '8%'},
+			{field: 'phone', title: '手机', width:'10%'},
+			{field: 'role_name', title: '角色', width:'8%'},
+			{field: 'status', title: '状态', width:'8%', templet: "#status-tmpl"},
+			{field: 'login_date', title: '最近登录时间', width:'11%'},
+			{field: 'create_user', title: '创建人',  width:'8%'},
+			{field: 'create_time', title: '创建时间'},
+			{align: 'center', title: '操作', toolbar: '#bartool', hide: toolbar}
+		];
+
+		table.render(renderParam(url,cols));
+
+		table.on('tool(user)', function(obj)
+		{
+			var data = obj.data;
+			var layEvent = obj.event;
+
+			if(layEvent === 'del')
+			{
+				layer.confirm('确定要删除吗？', function(index)
+				{
+					$.post("/admin/user/delete", {id: data.user_id},
+					function(json)
+					{
+						if(json.code==200)
+						{
+							parent.layer.closeAll();
+							parent.location.reload();
+						}else{
+							layer.msg(json.msg);
+						}
+					},"json");
+				});
+			} else if(layEvent === 'edit')
+			{
+				showBox('编辑用户', 650, 600, 1, '/admin/user/edit?id='+data.user_id);
+			}else if(layEvent === 'pass')
+			{
+				showBox('重置密码', 400, 300, 1, '/admin/user/editpass?id='+data.user_id);
+			}
+		});
+
+		form.on('switch(status)', function(data)
+		{
+			var id = data.elem.value;
+			var status = this.checked ? 1 : 2;
+
+			$.post("/admin/user/change", {"id":id,"status":status}, function(json)
+			{
+				if(json.code==200)
+				{
+					layer.msg(json.msg);
+				}else{
+					layer.msg(json.msg);
+				}
+			}, 'json');
+		});
+
+	})
+</script>
+</body>
+</html>

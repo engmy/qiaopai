@@ -1,0 +1,22 @@
+<div class="layui-side layui-side-menu">
+	<div class="layui-side-scroll">
+		<ul class="layui-nav layui-nav-tree" lay-filter="test">
+			<th:block th:each="menu:${menuList}">
+				<li class="layui-nav-item">
+					<a class="" href="javascript:;">
+						<i th:class="${'layui-icon ' + menu.icon}"></i> <th:block th:text="${menu.name}"></th:block>
+					</a>
+					<dl class="layui-nav-child">
+						<th:block th:each="node:${menu.children}">
+							<dd th:class="${node.checked}?'layui-this':''">
+								<a th:href="@{'/'+${node.url}}">
+									<i th:class="${'layui-icon ' + node.icon}"></i> <th:block th:text="${node.name}"></th:block>
+								</a>
+							</dd>
+						</th:block>
+					</dl>
+				</li>
+			</th:block>
+		</ul>
+	</div>
+</div>
